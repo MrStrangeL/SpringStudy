@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:contex="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd">
+
+    <!-- 配置Student对象:id-对象名  class-对象的模板类 -->
+    <!-- IoC容器通过无参构造创建对象 -->
+    <bean id="studentOne" class="com.springstudy.entity.Student">
+        <!-- 配置相关属性:name-对应属性名  value-对应属性值 -->
+        <property name="id" value="1"></property>
+        <property name="name" value="刘杨斌"></property>
+        <property name="age" value="26"></property>
+    </bean>
+
+    <!-- IoC容器通过无参构造创建对象 -->
+    <bean id="studentTwo" class="com.springstudy.entity.Student">
+        <!-- 配置相关属性:name-对应属性名  value-对应属性值 -->
+        <property name="id" value="2"></property>
+        <property name="name" value="宋灼吕"></property>
+        <property name="age" value="28"></property>
+    </bean>
+
+    <!-- IoC容器通过有参构造创建对象 -->
+    <bean id="studentThree" class="com.springstudy.entity.Student">
+        <!-- 配置相关属性:name-需要与有参构造的形参名对应  value-对应形参值 -->
+        <constructor-arg name="id" value="3"></constructor-arg>
+        <constructor-arg name="name" value="王清明"></constructor-arg>
+        <constructor-arg name="age" value="27"></constructor-arg>
+    </bean>
+
+    <!-- IoC容器通过有参构造创建对象 -->
+    <bean id="studentFour" class="com.springstudy.entity.Student">
+        <!-- 配置相关属性:name-需要与有参构造的形参名对应  value-对应形参值 -->
+        <constructor-arg index="0" value="4"></constructor-arg>
+        <constructor-arg index="1" value="刘杰斌"></constructor-arg>
+        <constructor-arg index="2" value="22"></constructor-arg>
+    </bean>
+
+    <!-- IoC 容器管理多个对象，并且对象之间有级联关系，如何实现？ -->
+    <!-- 创建对象classOne -->
+    <bean name="classesOne" class="com.springstudy.entity.Classes">
+        <property name="id" value="258"></property>
+        <property name="name" value="高258班">
+        </property>
+    </bean>
+
+    <bean id="studentFive" class="com.springstudy.entity.Student">
+        <property name="id" value="5"></property>
+        <property name="name" value="欧阳先森"></property>
+        <property name="age" value="26"></property>
+        <!-- 将classOne对象赋给studentFive对象 -->
+        <!-- 通过 ref 属性将其他 bean 赋给当前 bean 对象，这种方式叫做依赖注入（DI）-->
+        <property name="classes" ref="classesOne"></property>
+    </bean>
+
+    <!-- 如果是集合属性如何依赖注入？ -->
+    <bean name="classesTwo" class="com.springstudy.entity.Classes">
+        <property name="id" value="168"></property>
+        <property name="name" value="玉中168班"></property>
+    </bean>
+
+    <bean id="studentSix" class="com.springstudy.entity.Student">
+        <property name="id" value="16801"></property>
+        <property name="name" value="刘浩明"></property>
+        <property name="age" value="27"></property>
+        <!-- 将classOne对象赋给studentFive对象 -->
+        <!-- 通过 ref 属性将其他 bean 赋给当前 bean 对象，这种方式叫做依赖注入（DI）-->
+        <property name="classes" ref="classesTwo"></property>
+    </bean>
+
+    <bean name="classesThree" class="com.springstudy.entity.Classes">
+        <property name="id" value="166"></property>
+        <property name="name" value="玉中166班"></property>
+    </bean>
+
+    <bean id="studentSeven" class="com.springstudy.entity.Student">
+        <property name="id" value="16601"></property>
+        <property name="name" value="刘杜霞"></property>
+        <property name="age" value="27"></property>
+        <!-- 将classOne对象赋给studentFive对象 -->
+        <!-- 通过 ref 属性将其他 bean 赋给当前 bean 对象，这种方式叫做依赖注入（DI）-->
+        <property name="classes" ref="classesThree"></property>
+    </bean>
+    
+    <bean id="classesFour" class="com.springstudy.entity.Classes">
+        <property name="id" value="1"></property>
+        <property name="name" value="巡检中心完小"></property>
+        <property name="students">
+            <!-- 集合属性通过 list 标签和 ref 标签完成注入，ref 的 bean 属性指向需要注入的 bean 对象 -->
+            <list>
+                <ref bean="studentSix"></ref>
+                <ref bean="studentSeven"></ref>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Properties注入 -->
+    <bean id="dataSource" class="com.springstudy.entity.DataSource">
+        <property name="properties">
+            <props>
+                <prop key="user">root</prop>
+                <prop key="password">123</prop>
+                <prop key="jdbcUrl">jdbc:mysql/test</prop>
+                <prop key="driverClass">com.mysql.jdbc.driver</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- 测试singleton -->
+    <bean id="studentEight" class="com.springstudy.entity.Student" scope="singleton" init-method="init" destroy-method="destroy">
+        <property name="id" value="123"></property>
+        <property name="name" value="测试singleton"></property>
+        <property name="age" value="99"></property>
+        <property name="classes">
+            <bean class="com.springstudy.entity.Classes">
+                <property name="id" value="12311"></property>
+                <property name="name" value="测试班级"></property>
+            </bean>
+        </property>
+    </bean>
+
+    <!-- 测试Spring的继承 -->
+    <!-- 父bean -->
+    <bean id="fatherStudent" class="com.springstudy.entity.Student">
+        <property name="id" value="321"></property>
+        <property name="name" value="Spring继承测试"></property>
+        <property name="age" value="100"></property>
+    </bean>
+
+    <!-- 子bean，继承了父bean的属性，且可以覆盖父bean的属性 -->
+    <bean id="sonStudent" parent="fatherStudent">
+        <!-- 覆盖父bean的属性 -->
+        <property name="name">
+            <value><![CDATA[覆盖父bean的name属性]]></value>
+        </property>
+    </bean>
+
+    <!-- 导入外部资源 -->
+    <contex:property-placeholder location="classpath:jdbc.properties"></contex:property-placeholder>
+
+    <!-- 测试配置文件中的配置能否正确读取到配置文件中 -->
+    <bean id="c3p0Config" class="com.springstudy.entity.C3p0Config">
+        <property name="user" value="${mysql.user}"></property>
+        <property name="password" value="${mysql.password}"></property>
+        <property name="driverClass" value="${mysql.driverClass}"></property>
+        <property name="jdbcUrl" value="${mysql.jdbcUrl}"></property>
+    </bean>
+
+    <!-- 创建C3P0数据源 -->
+    <bean id="c3p0" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="user" value="${mysql.user}"></property>
+        <property name="password" value="${mysql.password}"></property>
+        <property name="driverClass" value="${mysql.driverClass}"></property>
+        <property name="jdbcUrl" value="${mysql.jdbcUrl}"></property>
+    </bean>
+
+    <!-- util命名空间和p命名空间 -->
+    <!-- 先定义两个Student的bean -->
+    <bean id="utilStuOne" class="com.springstudy.entity.Student" p:id="111" p:name="学生一" p:age="111"></bean>
+    <bean id="utilStuTwo" class="com.springstudy.entity.Student" p:id="112" p:name="学生二" p:age="112"></bean>
+
+    <!-- 使用util -->
+    <util:list id="stuList">
+        <ref bean="utilStuOne"></ref>
+        <ref bean="utilStuTwo"></ref>
+    </util:list>
+
+    <bean id="classesFive" class="com.springstudy.entity.Classes" p:id="1111" p:name="命名空间测试班" p:students-ref="stuList">
+    </bean>
+
+</beans>

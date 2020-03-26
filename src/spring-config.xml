@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!-- 配置静态工厂创建car -->
+    <bean id="carOne" class="com.springstudy.factory.StaticCarFactory" factory-method="getCar">
+        <constructor-arg value="1"></constructor-arg>
+    </bean>
+
+    <!-- 配置实例工厂创建car -->
+    <!-- 配置工厂bean -->
+    <bean id="instanceFactory" class="com.springstudy.factory.InstanceCarFactory"></bean>
+    <!-- 通过实例工厂创建car -->
+    <bean id="carTwo" factory-bean="instanceFactory" factory-method="getCar">
+        <constructor-arg value="2"></constructor-arg>
+    </bean>
+
+    <!-- 测试自动装配 -->
+    <bean id="personOne" class="com.springstudy.entity.Person" autowire="byName">
+        <property name="name" value="自动装载测试"></property>
+        <property name="age" value="1000"></property>
+        <!-- 这里就不手动配置car，通过自动装载来注入 -->
+    </bean>
+
+    <!-- 配置自动装载的bean，其中id要和Person中的属性名称保持一致byName -->
+    <bean id="car" factory-bean="instanceFactory" factory-method="getCar">
+        <constructor-arg value="2"></constructor-arg>
+    </bean>
+
+<!--    <bean id="personTwo" class="com.springstudy.entity.Person" autowire="byType">-->
+<!--        <property name="name" value="自动装载测试"></property>-->
+<!--        <property name="age" value="1000"></property>-->
+<!--        &lt;!&ndash; 这里就不手动配置car，通过自动装载来注入 &ndash;&gt;-->
+<!--    </bean>-->
+
+    <bean id="userDao" class="com.springstudy.dao.UserDaoImp"></bean>
+    <bean id="userService" class="com.springstudy.service.UserServiceImp">
+        <property name="userDao" ref="userDao"></property>
+    </bean>
+    <bean id="userController" class="com.springstudy.controller.UserController">
+        <property name="userService" ref="userService"></property>
+    </bean>
+</beans>
